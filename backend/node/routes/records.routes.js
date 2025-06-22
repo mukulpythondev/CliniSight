@@ -8,6 +8,7 @@ import {
     getPatientRecords 
 } from '../controllers/records.controller.js';
 import { authenticate } from '../middleware/authenticate.js';
+import { requireOTPVerification } from '../middleware/otpAuth.js';
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ router.use(authenticate);
 
 // Records routes
 router.get('/', getAllRecords);
-router.get('/patient/:patientId', getPatientRecords);
+router.get('/patient/:patientId', requireOTPVerification, getPatientRecords);
 router.post('/', createRecord);
 router.get('/:id', getRecord);
 router.put('/:id', updateRecord);

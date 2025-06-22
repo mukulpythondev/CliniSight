@@ -9,6 +9,7 @@ import connectDB from "./config/database.js";
 import doctorRoutes from "./routes/doctor.routes.js";
 import patientRoutes from "./routes/patient.routes.js";
 import recordsRoutes from "./routes/records.routes.js";
+import otpRoutes from "./routes/otp.routes.js";
 
 const app = express();
 
@@ -38,6 +39,7 @@ const API_VERSION = '/api/v1';
 app.use(`${API_VERSION}/doctor`, doctorRoutes);
 app.use(`${API_VERSION}/patients`, patientRoutes);
 app.use(`${API_VERSION}/records`, recordsRoutes);
+app.use(`${API_VERSION}/otp`, otpRoutes);
 
 // Root endpoint
 app.get("/", (req, res) => {
