@@ -23,6 +23,7 @@ export const getAllPatients = async (req, res) => {
 export const getPatient = async (req, res) => {
     try {
         const patient = await Patient.findById(req.params.id);
+        console.log(patient);
         
         if (!patient) {
             return res.status(404).json({
