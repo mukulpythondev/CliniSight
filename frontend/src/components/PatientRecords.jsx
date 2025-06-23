@@ -70,11 +70,11 @@ const PatientRecords = () => {
         <div className="max-w-4xl mx-auto">
           <div className="glass-card p-8 text-center">
             <div className="text-red-400 text-6xl mb-4">⚠️</div>
-            <h2 className="text-2xl font-bold text-white mb-4">Error Loading Patient Data</h2>
-            <p className="text-gray-300 mb-6">{error}</p>
+            <h2 className="text-2xl font-bold text-black mb-4">Error Loading Patient Data</h2>
+            <p className="text-gray-700 mb-6">{error}</p>
             <button
               onClick={() => navigate('/search')}
-              className="teal-gradient px-6 py-3 text-white font-semibold rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+              className="teal-gradient px-6 py-3 text-black font-semibold rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-300"
             >
               Back to Search
             </button>
@@ -91,21 +91,21 @@ const PatientRecords = () => {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <div className="w-10 h-10 bg-teal-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">C</span>
+              <span className="text-black font-bold text-xl">C</span>
             </div>
-            <span className="text-white text-2xl font-bold">CliniSight</span>
+            <span className="text-black text-2xl font-bold">CliniSight</span>
           </div>
           
           <div className="flex items-center space-x-4">
             <button
               onClick={() => navigate('/search')}
-              className="glass-effect px-4 py-2 text-white rounded-lg hover:bg-white hover:bg-opacity-20 transition-all duration-300"
+              className="glass-effect px-4 py-2 text-black rounded-lg hover:bg-white hover:bg-opacity-20 transition-all duration-300"
             >
               ← Back to Search
             </button>
             <button
               onClick={() => navigate('/doctor/dashboard')}
-              className="glass-effect px-4 py-2 text-white rounded-lg hover:bg-white hover:bg-opacity-20 transition-all duration-300"
+              className="glass-effect px-4 py-2 text-black rounded-lg hover:bg-white hover:bg-opacity-20 transition-all duration-300"
             >
               Dashboard
             </button>
@@ -119,21 +119,21 @@ const PatientRecords = () => {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-6">
               <div className="w-20 h-20 bg-teal-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-3xl">
+                <span className="text-black font-bold text-3xl">
                   {patient?.name?.charAt(0)}
                 </span>
               </div>
               <div>
-                <h1 className="text-4xl font-bold text-white mb-2">
+                <h1 className="text-4xl font-bold text-black mb-2">
                   {patient?.name}
                 </h1>
-                <p className="text-gray-300 text-lg">
+                <p className="text-gray-700 text-lg">
                   Patient ID: {patient?._id}
                 </p>
               </div>
             </div>
             <div className="text-right">
-              <div className={`inline-block px-4 py-2 rounded-full text-white font-semibold ${getBloodGroupColor(patient?.blood_group)}`}>
+              <div className={`inline-block px-4 py-2 rounded-full text-black font-semibold ${getBloodGroupColor(patient?.blood_group)}`}>
                 {patient?.blood_group}
               </div>
             </div>
@@ -141,21 +141,21 @@ const PatientRecords = () => {
 
           {/* Quick Stats */}
           <div className="grid md:grid-cols-4 gap-4">
-            <div className="bg-white bg-opacity-10 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-white">{patient?.age}</div>
-              <div className="text-gray-300 text-sm">Age</div>
+            <div className="bg-gray-500 bg-opacity-10 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-black">{patient?.age}</div>
+              <div className="text-gray-700 text-sm">Age</div>
             </div>
-            <div className="bg-white bg-opacity-10 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-white capitalize">{patient?.gender}</div>
-              <div className="text-gray-300 text-sm">Gender</div>
+            <div className="bg-gray-500 bg-opacity-10 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-black capitalize">{patient?.gender}</div>
+              <div className="text-gray-700 text-sm">Gender</div>
             </div>
-            <div className="bg-white bg-opacity-10 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-white">{records.length}</div>
-              <div className="text-gray-300 text-sm">Records</div>
+            <div className="bg-gray-500 bg-opacity-10 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-black">{records.length}</div>
+              <div className="text-gray-700 text-sm">Records</div>
             </div>
-            <div className="bg-white bg-opacity-10 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-white">{patient?.allergies?.length || 0}</div>
-              <div className="text-gray-300 text-sm">Allergies</div>
+            <div className="bg-gray-500 bg-opacity-10 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-black">{patient?.allergies?.length || 0}</div>
+              <div className="text-gray-700 text-sm">Allergies</div>
             </div>
           </div>
         </div>
@@ -169,8 +169,8 @@ const PatientRecords = () => {
                 onClick={() => setActiveTab(tab)}
                 className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
                   activeTab === tab
-                    ? 'teal-gradient text-white'
-                    : 'text-gray-300 hover:text-white hover:bg-white hover:bg-opacity-10'
+                    ? 'teal-gradient text-black'
+                    : 'text-gray-700 hover:text-black hover:bg-white hover:bg-opacity-10'
                 }`}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -183,51 +183,51 @@ const PatientRecords = () => {
             {activeTab === 'overview' && (
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
-                  <h3 className="text-xl font-semibold text-white mb-4">Personal Information</h3>
+                  <h3 className="text-xl font-semibold text-black mb-4">Personal Information</h3>
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="text-gray-300">Full Name:</span>
-                      <span className="text-white font-medium">{patient?.name}</span>
+                      <span className="text-gray-700">Full Name:</span>
+                      <span className="text-black font-medium">{patient?.name}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-300">Phone:</span>
-                      <span className="text-white font-medium">{patient?.phone}</span>
+                      <span className="text-gray-700">Phone:</span>
+                      <span className="text-black font-medium">{patient?.phone}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-300">Email:</span>
-                      <span className="text-white font-medium">{patient?.email || 'Not provided'}</span>
+                      <span className="text-gray-700">Email:</span>
+                      <span className="text-black font-medium">{patient?.email || 'Not provided'}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-300">Age:</span>
-                      <span className="text-white font-medium">{patient?.age} years</span>
+                      <span className="text-gray-700">Age:</span>
+                      <span className="text-black font-medium">{patient?.age} years</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-300">Gender:</span>
-                      <span className="text-white font-medium capitalize">{patient?.gender}</span>
+                      <span className="text-gray-700">Gender:</span>
+                      <span className="text-black font-medium capitalize">{patient?.gender}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-300">Blood Group:</span>
-                      <span className="text-white font-medium">{patient?.blood_group}</span>
+                      <span className="text-gray-700">Blood Group:</span>
+                      <span className="text-black font-medium">{patient?.blood_group}</span>
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-semibold text-white mb-4">Address</h3>
-                  <p className="text-gray-300">{patient?.address || 'Address not provided'}</p>
+                  <h3 className="text-xl font-semibold text-black mb-4">Address</h3>
+                  <p className="text-gray-700">{patient?.address || 'Address not provided'}</p>
                   
-                  <h3 className="text-xl font-semibold text-white mb-4 mt-6">Current Medications</h3>
+                  <h3 className="text-xl font-semibold text-black mb-4 mt-6">Current Medications</h3>
                   {patient?.current_medications?.length > 0 ? (
                     <ul className="space-y-2">
                       {patient.current_medications.map((med, index) => (
-                        <li key={index} className="text-gray-300 flex items-center">
+                        <li key={index} className="text-gray-700 flex items-center">
                           <span className="w-2 h-2 bg-teal-400 rounded-full mr-3"></span>
                           {med}
                         </li>
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-gray-300">No current medications</p>
+                    <p className="text-gray-700">No current medications</p>
                   )}
                 </div>
               </div>
@@ -236,8 +236,8 @@ const PatientRecords = () => {
             {activeTab === 'records' && (
               <div>
                 <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-xl font-semibold text-white">Medical Records</h3>
-                  <span className="text-gray-300">{records.length} records found</span>
+                  <h3 className="text-xl font-semibold text-black">Medical Records</h3>
+                  <span className="text-gray-700">{records.length} records found</span>
                 </div>
                 
                 {records.length > 0 ? (
@@ -246,32 +246,32 @@ const PatientRecords = () => {
                       <div key={record._id} className="bg-white bg-opacity-10 rounded-lg p-6">
                         <div className="flex justify-between items-start mb-4">
                           <div>
-                            <h4 className="text-lg font-semibold text-white mb-2">{record.title}</h4>
+                            <h4 className="text-lg font-semibold text-black mb-2">{record.title}</h4>
                             <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                              record.type === 'consultation' ? 'bg-blue-500 text-white' :
-                              record.type === 'test' ? 'bg-green-500 text-white' :
-                              record.type === 'prescription' ? 'bg-purple-500 text-white' :
-                              'bg-gray-500 text-white'
+                              record.type === 'consultation' ? 'bg-blue-500 text-black' :
+                              record.type === 'test' ? 'bg-green-500 text-black' :
+                              record.type === 'prescription' ? 'bg-purple-500 text-black' :
+                              'bg-gray-500 text-black'
                             }`}>
                               {record.type}
                             </span>
                           </div>
                           <div className="text-right">
-                            <div className="text-gray-300 text-sm">
+                            <div className="text-gray-700 text-sm">
                               {new Date(record.date).toLocaleDateString()}
                             </div>
-                            <div className="text-gray-300 text-sm">
+                            <div className="text-gray-700 text-sm">
                               Dr. {record.doctor_id?.name || 'Unknown'}
                             </div>
                           </div>
                         </div>
                         
-                        <p className="text-gray-300 mb-3">{record.description}</p>
+                        <p className="text-gray-700 mb-3">{record.description}</p>
                         
                         {record.notes && (
                           <div className="bg-white bg-opacity-5 rounded-lg p-4">
                             <h5 className="text-teal-300 font-semibold mb-2">Notes:</h5>
-                            <p className="text-gray-300">{record.notes}</p>
+                            <p className="text-gray-700">{record.notes}</p>
                           </div>
                         )}
                       </div>
@@ -280,8 +280,8 @@ const PatientRecords = () => {
                 ) : (
                   <div className="text-center py-12">
                     <div className="text-gray-400 text-6xl mb-4">📋</div>
-                    <h3 className="text-xl font-semibold text-white mb-2">No Records Found</h3>
-                    <p className="text-gray-300">This patient has no medical records yet.</p>
+                    <h3 className="text-xl font-semibold text-black mb-2">No Records Found</h3>
+                    <p className="text-gray-700">This patient has no medical records yet.</p>
                   </div>
                 )}
               </div>
@@ -290,34 +290,34 @@ const PatientRecords = () => {
             {activeTab === 'medical' && (
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
-                  <h3 className="text-xl font-semibold text-white mb-4">Medical History</h3>
+                  <h3 className="text-xl font-semibold text-black mb-4">Medical History</h3>
                   {patient?.medical_history?.length > 0 ? (
                     <ul className="space-y-2">
                       {patient.medical_history.map((history, index) => (
-                        <li key={index} className="text-gray-300 flex items-center">
+                        <li key={index} className="text-gray-700 flex items-center">
                           <span className="w-2 h-2 bg-blue-400 rounded-full mr-3"></span>
                           {history}
                         </li>
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-gray-300">No medical history recorded</p>
+                    <p className="text-gray-700">No medical history recorded</p>
                   )}
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-semibold text-white mb-4">Allergies</h3>
+                  <h3 className="text-xl font-semibold text-black mb-4">Allergies</h3>
                   {patient?.allergies?.length > 0 ? (
                     <ul className="space-y-2">
                       {patient.allergies.map((allergy, index) => (
-                        <li key={index} className="text-gray-300 flex items-center">
+                        <li key={index} className="text-gray-700 flex items-center">
                           <span className="w-2 h-2 bg-red-400 rounded-full mr-3"></span>
                           {allergy}
                         </li>
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-gray-300">No known allergies</p>
+                    <p className="text-gray-700">No known allergies</p>
                   )}
                 </div>
               </div>
@@ -325,24 +325,24 @@ const PatientRecords = () => {
 
             {activeTab === 'emergency' && (
               <div>
-                <h3 className="text-xl font-semibold text-white mb-6">Emergency Contact</h3>
+                <h3 className="text-xl font-semibold text-black mb-6">Emergency Contact</h3>
                 {patient?.emergency_contact ? (
                   <div className="bg-white bg-opacity-10 rounded-lg p-6">
                     <div className="grid md:grid-cols-2 gap-6">
                       <div>
-                        <h4 className="text-lg font-semibold text-white mb-4">Contact Details</h4>
+                        <h4 className="text-lg font-semibold text-black mb-4">Contact Details</h4>
                         <div className="space-y-3">
                           <div className="flex justify-between">
-                            <span className="text-gray-300">Name:</span>
-                            <span className="text-white font-medium">{patient.emergency_contact.name}</span>
+                            <span className="text-gray-700">Name:</span>
+                            <span className="text-black font-medium">{patient.emergency_contact.name}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-300">Phone:</span>
-                            <span className="text-white font-medium">{patient.emergency_contact.phone}</span>
+                            <span className="text-gray-700">Phone:</span>
+                            <span className="text-black font-medium">{patient.emergency_contact.phone}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-300">Relationship:</span>
-                            <span className="text-white font-medium">{patient.emergency_contact.relationship}</span>
+                            <span className="text-gray-700">Relationship:</span>
+                            <span className="text-black font-medium">{patient.emergency_contact.relationship}</span>
                           </div>
                         </div>
                       </div>
@@ -350,7 +350,7 @@ const PatientRecords = () => {
                       <div className="flex items-center justify-center">
                         <div className="text-center">
                           <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mb-4">
-                            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                             </svg>
                           </div>
@@ -362,8 +362,8 @@ const PatientRecords = () => {
                 ) : (
                   <div className="text-center py-12">
                     <div className="text-gray-400 text-6xl mb-4">📞</div>
-                    <h3 className="text-xl font-semibold text-white mb-2">No Emergency Contact</h3>
-                    <p className="text-gray-300">Emergency contact information not provided.</p>
+                    <h3 className="text-xl font-semibold text-black mb-2">No Emergency Contact</h3>
+                    <p className="text-gray-700">Emergency contact information not provided.</p>
                   </div>
                 )}
               </div>
