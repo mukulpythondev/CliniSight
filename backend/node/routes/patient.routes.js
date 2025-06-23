@@ -16,7 +16,7 @@ router.use(authenticate);
 
 // Patient routes
 router.get('/', getAllPatients);
-router.get('/search', searchPatients);
+router.post('/search', searchPatients);
 router.post('/', createPatient);
 router.get('/:id', getPatient);
 router.put('/:id', updatePatient);
