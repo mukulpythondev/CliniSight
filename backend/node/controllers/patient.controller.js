@@ -136,35 +136,52 @@ export const deletePatient = async (req, res) => {
 // Search patients
 export const searchPatients = async (req, res) => {
     try {
-        const { query } = req.query;
+        const { searchMethod, searchValue } = req.body;
         
-        if (!query) {
+        if (!searchValue) {
             return res.status(400).json({
                 success: false,
-                message: 'Search query is required'
+                message: 'Search value is required'
             });
         }
 
-        console.log('Search query:', query);
+        let query = {};
+        if (searchMethod === 'id') {
+            query = { _id: searchValue };
+        } else if (searchMethod === 'phone') {
+            query = { phone: searchValue };
+        } else {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid search method'
+            });
+        }
 
-        const patients = await Patient.find({
-            $or: [
-                { name: { $regex: query, $options: 'i' } },
-                { phone: { $regex: query, $options: 'i' } },
-                { email: { $regex: query, $options: 'i' } }
-            ]
-        });
+        const patient = await Patient.findOne(query);
+
+        if (!patient) {
+            return res.status(404).json({
+                success: false,
+                message: 'Patient not found'
+            });
+        }
 
         res.status(200).json({
             success: true,
-            count: patients.length,
-            data: patients
+            data: patient
         });
     } catch (error) {
         console.error('Search patients error:', error);
+        // Handle cases like invalid ObjectId
+        if (error.kind === 'ObjectId') {
+             return res.status(404).json({
+                success: false,
+                message: 'Patient not found'
+            });
+        }
         res.status(500).json({
             success: false,
-            message: 'Failed to search patients'
+            message: 'Failed to search for patient'
         });
     }
 }; 

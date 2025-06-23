@@ -1,4 +1,5 @@
 import { Record } from '../models/records.model.js';
+import { Patient } from '../models/patient.model.js';
 import mongoose from 'mongoose';
 
 // Get all records
@@ -26,14 +27,27 @@ export const getAllRecords = async (req, res) => {
 // Get records by patient
 export const getPatientRecords = async (req, res) => {
     try {
-        const records = await Record.find({ patient_id: req.params.patientId })
+        const { patientId } = req.params;
+
+        const patient = await Patient.findById(patientId);
+
+        if (!patient) {
+            return res.status(404).json({
+                success: false,
+                message: 'Patient not found'
+            });
+        }
+
+        const records = await Record.find({ patient_id: patientId })
             .populate('doctor_id', 'name speciality')
             .sort({ date: -1 });
         
         res.status(200).json({
             success: true,
-            count: records.length,
-            data: records
+            data: {
+                patient,
+                records
+            }
         });
     } catch (error) {
         console.error('Get patient records error:', error);
