@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Legend } from 'recharts';
 import { Calendar, User, FileText, Activity, TrendingUp, Clock, AlertCircle, CheckCircle } from 'lucide-react';
-
+import { Link } from 'react-router-dom';
 const PatientDashboard = () => {
   const [showSummary, setShowSummary] = useState(false);
 
@@ -184,7 +184,8 @@ const PatientDashboard = () => {
             className="bg-gradient-to-r from-[#50d0b0] to-[#3bb99f] px-6 py-3 text-white font-medium rounded-xl hover:shadow-lg transform hover:scale-[1.02] transition-all duration-300 shadow-md flex items-center space-x-2"
           >
             <FileText className="w-5 h-5" />
-            <span>{showSummary ? 'Hide Summary' : 'Generate Summary'}</span>
+            {/* <span>{showSummary ? 'Hide Summary' : 'Generate Summary'}</span> */}
+            <Link to='/summary'>Generate Summary</Link>
           </button>
         </div>
 
