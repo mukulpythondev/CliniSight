@@ -7,6 +7,7 @@ import PatientSearch from './components/PatientSearch';
 import PatientRecords from './components/PatientRecords';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import Analysis from './components/Analysis';
+import Visual_Representation from './components/Visual_Representation';
 import './App.css';
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
             <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
             <Route path="/search" element={<PatientSearch />} />
             <Route path="/analysis" element={<Analysis />} />
+            <Route path="/visual" element={<Visual_Representation />} />
             <Route path="/patient/:patientId" element={<PatientRecords />} />
           </Route>
         </Routes>
