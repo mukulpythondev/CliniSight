@@ -1,9 +1,9 @@
 import Appointment from '../models/appointment.js';
 import { GoogleGenAI } from "@google/genai";
-
+import dotenv from "dotenv"
 // Initialize Gemini API
 const ai = new GoogleGenAI({
-  apiKey: "AIzaSyBCH35myWjaxjnCd1GNCeCmYWgaz9EtMko"
+  apiKey: process.env.GEMINI_API_KEY
 });
 
 export const createAppointment = async (req, res) => {
