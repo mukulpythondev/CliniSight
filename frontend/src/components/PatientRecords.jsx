@@ -9,6 +9,9 @@ const PatientRecords = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('overview');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     fetchPatientData();
@@ -20,7 +23,7 @@ const PatientRecords = () => {
 
     try {
       const token = localStorage.getItem('token');
-      
+
       const response = await fetch(`http://localhost:3000/api/v1/records/patient/${patientId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -36,9 +39,31 @@ const PatientRecords = () => {
         setError(data.message || 'Failed to fetch patient data');
       }
     } catch (err) {
+      console.error('Fetch error:', err); // Added console error for debugging
       setError('Network error. Please try again.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleAnalyzeReport = async () => {
+    setIsAnalyzing(true);
+    setShowModal(true);
+
+    try {
+      const res = await fetch('http://127.0.0.1:8000/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ patient_info: patient, records }),
+      });
+
+      const data = await res.json();
+      setAnalysisResult(data.summary || 'No result returned.');
+    } catch (error) {
+      console.error('Analysis error:', error); // Added console error
+      setAnalysisResult('Error analyzing data.');
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
@@ -68,13 +93,13 @@ const PatientRecords = () => {
     return (
       <div className="min-h-screen p-6">
         <div className="max-w-4xl mx-auto">
-          <div className="glass-card p-8 text-center">
+          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
             <div className="text-red-400 text-6xl mb-4">⚠️</div>
             <h2 className="text-2xl font-bold text-black mb-4">Error Loading Patient Data</h2>
             <p className="text-gray-700 mb-6">{error}</p>
             <button
               onClick={() => navigate('/search')}
-              className="teal-gradient px-6 py-3 text-black font-semibold rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+              className="bg-teal-500 hover:bg-teal-600 px-6 py-3 text-white font-semibold rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-300"
             >
               Back to Search
             </button>
@@ -84,151 +109,109 @@ const PatientRecords = () => {
     );
   }
 
+  // Main content - this was missing!
   return (
-    <div className="min-h-screen p-6">
-      {/* Navigation */}
-      <nav className="glass-effect p-6 mb-8 rounded-2xl">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-teal-500 rounded-lg flex items-center justify-center">
-              <span className="text-black font-bold text-xl">C</span>
+    <div className="min-h-screen p-6 bg-gray-50">
+      {/* Modal for Analysis Result */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white max-w-2xl w-full p-6 rounded-xl shadow-xl">
+            <h2 className="text-2xl font-bold text-black mb-4">AI Analysis Summary</h2>
+            <div className="bg-gray-100 p-4 rounded-lg max-h-[60vh] overflow-y-auto">
+              <pre className="whitespace-pre-wrap text-gray-800">
+                {isAnalyzing ? 'Analyzing patient data...' : analysisResult}
+              </pre>
             </div>
-            <span className="text-black text-2xl font-bold">CliniSight</span>
+            <div className="mt-6 text-right">
+              <button
+                onClick={() => setShowModal(false)}
+                className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700 transition-colors"
+              >
+                Close
+              </button>
+            </div>
           </div>
-          
-          <div className="flex items-center space-x-4">
+        </div>
+      )}
+
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+          <div className="flex items-center justify-between">
             <button
               onClick={() => navigate('/search')}
-              className="glass-effect px-4 py-2 text-black rounded-lg hover:bg-white hover:bg-opacity-20 transition-all duration-300"
+              className="text-teal-600 hover:text-teal-800 font-semibold flex items-center"
             >
               ← Back to Search
             </button>
-            <button
-              onClick={() => navigate('/doctor/dashboard')}
-              className="glass-effect px-4 py-2 text-black rounded-lg hover:bg-white hover:bg-opacity-20 transition-all duration-300"
-            >
-              Dashboard
-            </button>
+            <h1 className="text-3xl font-bold text-gray-800">Patient Records</h1>
+            <div></div>
           </div>
         </div>
-      </nav>
 
-      <div className="max-w-7xl mx-auto">
-        {/* Patient Header */}
-        <div className="glass-card p-8 mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-6">
-              <div className="w-20 h-20 bg-teal-500 rounded-full flex items-center justify-center">
-                <span className="text-black font-bold text-3xl">
-                  {patient?.name?.charAt(0)}
-                </span>
+        {/* Patient Info Card */}
+        {patient && (
+          <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                  {patient.name || 'Unknown Patient'}
+                </h2>
+                <p className="text-gray-600">ID: {patient.id || patientId}</p>
+                <p className="text-gray-600">Age: {patient.age || 'N/A'}</p>
+                <p className="text-gray-600">Gender: {patient.gender || 'N/A'}</p>
               </div>
               <div>
-                <h1 className="text-4xl font-bold text-black mb-2">
-                  {patient?.name}
-                </h1>
-                <p className="text-gray-700 text-lg">
-                  Patient ID: {patient?._id}
-                </p>
+                <p className="text-gray-600">Phone: {patient.phone || 'N/A'}</p>
+                <p className="text-gray-600">Email: {patient.email || 'N/A'}</p>
+                <p className="text-gray-600">Address: {patient.address || 'N/A'}</p>
               </div>
-            </div>
-            <div className="text-right">
-              <div className={`inline-block px-4 py-2 rounded-full text-black font-semibold ${getBloodGroupColor(patient?.blood_group)}`}>
-                {patient?.blood_group}
+              <div className="flex items-center justify-center">
+                {patient.bloodGroup && (
+                  <div className={`${getBloodGroupColor(patient.bloodGroup)} text-white px-4 py-2 rounded-full font-bold text-lg`}>
+                    {patient.bloodGroup}
+                  </div>
+                )}
               </div>
             </div>
           </div>
-
-          {/* Quick Stats */}
-          <div className="grid md:grid-cols-4 gap-4">
-            <div className="bg-gray-500 bg-opacity-10 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-black">{patient?.age}</div>
-              <div className="text-gray-700 text-sm">Age</div>
-            </div>
-            <div className="bg-gray-500 bg-opacity-10 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-black capitalize">{patient?.gender}</div>
-              <div className="text-gray-700 text-sm">Gender</div>
-            </div>
-            <div className="bg-gray-500 bg-opacity-10 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-black">{records.length}</div>
-              <div className="text-gray-700 text-sm">Records</div>
-            </div>
-            <div className="bg-gray-500 bg-opacity-10 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-black">{patient?.allergies?.length || 0}</div>
-              <div className="text-gray-700 text-sm">Allergies</div>
-            </div>
-          </div>
-        </div>
+        )}
 
         {/* Tabs */}
-        <div className="glass-card p-8">
-          <div className="flex space-x-1 mb-8">
-            {['overview', 'records', 'medical', 'emergency'].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
-                  activeTab === tab
-                    ? 'teal-gradient text-black'
-                    : 'text-gray-700 hover:text-black hover:bg-white hover:bg-opacity-10'
-                }`}
-              >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
-            ))}
+        <div className="bg-white rounded-lg shadow-lg">
+          <div className="border-b">
+            <nav className="flex space-x-8 px-6">
+              {['overview', 'records', 'vitals'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`py-4 px-2 border-b-2 font-medium text-sm capitalize transition-colors ${
+                    activeTab === tab
+                      ? 'border-teal-500 text-teal-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </nav>
           </div>
 
           {/* Tab Content */}
-          <div className="min-h-96">
+          <div className="p-6">
             {activeTab === 'overview' && (
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  <h3 className="text-xl font-semibold text-black mb-4">Personal Information</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-gray-700">Full Name:</span>
-                      <span className="text-black font-medium">{patient?.name}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-700">Phone:</span>
-                      <span className="text-black font-medium">{patient?.phone}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-700">Email:</span>
-                      <span className="text-black font-medium">{patient?.email || 'Not provided'}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-700">Age:</span>
-                      <span className="text-black font-medium">{patient?.age} years</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-700">Gender:</span>
-                      <span className="text-black font-medium capitalize">{patient?.gender}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-700">Blood Group:</span>
-                      <span className="text-black font-medium">{patient?.blood_group}</span>
-                    </div>
+              <div>
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">Patient Overview</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-gray-700 mb-2">Recent Activity</h4>
+                    <p className="text-gray-600">Total Records: {records.length}</p>
+                    <p className="text-gray-600">Last Visit: {records[0]?.date || 'N/A'}</p>
                   </div>
-                </div>
-
-                <div>
-                  <h3 className="text-xl font-semibold text-black mb-4">Address</h3>
-                  <p className="text-gray-700">{patient?.address || 'Address not provided'}</p>
-                  
-                  <h3 className="text-xl font-semibold text-black mb-4 mt-6">Current Medications</h3>
-                  {patient?.current_medications?.length > 0 ? (
-                    <ul className="space-y-2">
-                      {patient.current_medications.map((med, index) => (
-                        <li key={index} className="text-gray-700 flex items-center">
-                          <span className="w-2 h-2 bg-teal-400 rounded-full mr-3"></span>
-                          {med}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-gray-700">No current medications</p>
-                  )}
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-gray-700 mb-2">Emergency Contact</h4>
+                    <p className="text-gray-600">{patient?.emergencyContact || 'Not provided'}</p>
+                  </div>
                 </div>
               </div>
             )}
@@ -236,136 +219,56 @@ const PatientRecords = () => {
             {activeTab === 'records' && (
               <div>
                 <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-xl font-semibold text-black">Medical Records</h3>
-                  <span className="text-gray-700">{records.length} records found</span>
+                  <h3 className="text-xl font-semibold text-gray-800">Medical Records</h3>
+                  <button
+                    onClick={handleAnalyzeReport}
+                    disabled={isAnalyzing}
+                    className="bg-teal-500 hover:bg-teal-600 disabled:bg-gray-400 text-white px-5 py-2 rounded-lg font-semibold transition-all"
+                  >
+                    {isAnalyzing ? 'Analyzing...' : 'Analyze Report'}
+                  </button>
                 </div>
                 
                 {records.length > 0 ? (
                   <div className="space-y-4">
-                    {records.map((record) => (
-                      <div key={record._id} className="bg-white bg-opacity-10 rounded-lg p-6">
-                        <div className="flex justify-between items-start mb-4">
-                          <div>
-                            <h4 className="text-lg font-semibold text-black mb-2">{record.title}</h4>
-                            <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                              record.type === 'consultation' ? 'bg-blue-500 text-black' :
-                              record.type === 'test' ? 'bg-green-500 text-black' :
-                              record.type === 'prescription' ? 'bg-purple-500 text-black' :
-                              'bg-gray-500 text-black'
-                            }`}>
-                              {record.type}
-                            </span>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-gray-700 text-sm">
-                              {new Date(record.date).toLocaleDateString()}
-                            </div>
-                            <div className="text-gray-700 text-sm">
-                              Dr. {record.doctor_id?.name || 'Unknown'}
-                            </div>
-                          </div>
+                    {records.map((record, index) => (
+                      <div key={index} className="border border-gray-200 rounded-lg p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <h4 className="font-semibold text-gray-800">{record.type || 'Medical Record'}</h4>
+                          <span className="text-sm text-gray-500">{record.date}</span>
                         </div>
-                        
-                        <p className="text-gray-700 mb-3">{record.description}</p>
-                        
-                        {record.notes && (
-                          <div className="bg-white bg-opacity-5 rounded-lg p-4">
-                            <h5 className="text-teal-300 font-semibold mb-2">Notes:</h5>
-                            <p className="text-gray-700">{record.notes}</p>
-                          </div>
-                        )}
+                        <p className="text-gray-600">{record.description || record.notes}</p>
+                        {record.doctor && <p className="text-sm text-gray-500 mt-2">Dr. {record.doctor}</p>}
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-12">
-                    <div className="text-gray-400 text-6xl mb-4">📋</div>
-                    <h3 className="text-xl font-semibold text-black mb-2">No Records Found</h3>
-                    <p className="text-gray-700">This patient has no medical records yet.</p>
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">No medical records found for this patient.</p>
                   </div>
                 )}
               </div>
             )}
 
-            {activeTab === 'medical' && (
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  <h3 className="text-xl font-semibold text-black mb-4">Medical History</h3>
-                  {patient?.medical_history?.length > 0 ? (
-                    <ul className="space-y-2">
-                      {patient.medical_history.map((history, index) => (
-                        <li key={index} className="text-gray-700 flex items-center">
-                          <span className="w-2 h-2 bg-blue-400 rounded-full mr-3"></span>
-                          {history}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-gray-700">No medical history recorded</p>
-                  )}
-                </div>
-
-                <div>
-                  <h3 className="text-xl font-semibold text-black mb-4">Allergies</h3>
-                  {patient?.allergies?.length > 0 ? (
-                    <ul className="space-y-2">
-                      {patient.allergies.map((allergy, index) => (
-                        <li key={index} className="text-gray-700 flex items-center">
-                          <span className="w-2 h-2 bg-red-400 rounded-full mr-3"></span>
-                          {allergy}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-gray-700">No known allergies</p>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'emergency' && (
+            {activeTab === 'vitals' && (
               <div>
-                <h3 className="text-xl font-semibold text-black mb-6">Emergency Contact</h3>
-                {patient?.emergency_contact ? (
-                  <div className="bg-white bg-opacity-10 rounded-lg p-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div>
-                        <h4 className="text-lg font-semibold text-black mb-4">Contact Details</h4>
-                        <div className="space-y-3">
-                          <div className="flex justify-between">
-                            <span className="text-gray-700">Name:</span>
-                            <span className="text-black font-medium">{patient.emergency_contact.name}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-700">Phone:</span>
-                            <span className="text-black font-medium">{patient.emergency_contact.phone}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-700">Relationship:</span>
-                            <span className="text-black font-medium">{patient.emergency_contact.relationship}</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center justify-center">
-                        <div className="text-center">
-                          <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mb-4">
-                            <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                            </svg>
-                          </div>
-                          <p className="text-red-300 font-semibold">Emergency Contact</p>
-                        </div>
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">Vital Signs</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {records.filter(r => r.vitals).map((record, index) => (
+                    <div key={index} className="bg-gray-50 p-4 rounded-lg">
+                      <h4 className="font-semibold text-gray-700 mb-2">{record.date}</h4>
+                      <div className="space-y-1 text-sm">
+                        <p>BP: {record.vitals?.bloodPressure || 'N/A'}</p>
+                        <p>HR: {record.vitals?.heartRate || 'N/A'}</p>
+                        <p>Temp: {record.vitals?.temperature || 'N/A'}</p>
                       </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-12">
-                    <div className="text-gray-400 text-6xl mb-4">📞</div>
-                    <h3 className="text-xl font-semibold text-black mb-2">No Emergency Contact</h3>
-                    <p className="text-gray-700">Emergency contact information not provided.</p>
-                  </div>
-                )}
+                  )) || (
+                    <div className="col-span-3 text-center py-8">
+                      <p className="text-gray-500">No vital signs recorded.</p>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
